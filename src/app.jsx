@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import {
   ApolloClient,
@@ -8,7 +8,8 @@ import {
 } from '@apollo/client'
 
 import { Home, Profile } from './pages'
-import { Login, ProtectedRoute, useAuth } from './components/auth'
+import { Login, ProtectedRoute } from './components/auth'
+import { Header } from './components/shared'
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -47,31 +48,11 @@ const testApollo = async () => {
 testApollo()
 
 function App() {
-  const { user, signIn, signOut } = useAuth()
-
   return (
     <ApolloProvider client={client}>
       <Router>
         <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/profile">Profile</Link>
-              </li>
-            </ul>
-          </nav>
-          {}
-
-          {user ? (
-            <>
-              {`Hi ${user.username}, `}
-              <button onClick={() => signOut()}>logout</button>
-            </>
-          ) : null}
-
+          <Header />
           <Switch>
             <ProtectedRoute path="/profile">
               <Profile />

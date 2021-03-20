@@ -6,7 +6,8 @@ const Login = () => {
   const { state } = useLocation()
   const history = useHistory()
 
-  const { from } = state || { from: { pathname: '/' } }
+  const { from } = { from: { pathname: '/' }, ...state }
+
   const login = () => {
     signIn({
       callback: () => {
@@ -18,7 +19,7 @@ const Login = () => {
 
   return (
     <>
-      login
+      {'login '}
       <button onClick={login}>login</button>
     </>
   )
