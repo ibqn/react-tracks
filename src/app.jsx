@@ -8,6 +8,7 @@ import {
 } from '@apollo/client'
 
 import { Home, Profile } from './pages'
+import { Login, ProtectedRoute, useAuth } from './components/auth'
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -46,6 +47,8 @@ const testApollo = async () => {
 testApollo()
 
 function App() {
+  const { user, signIn, signOut } = useAuth()
+
   return (
     <ApolloProvider client={client}>
       <Router>
@@ -60,10 +63,21 @@ function App() {
               </li>
             </ul>
           </nav>
+          {}
+
+          {user ? (
+            <>
+              {`Hi ${user.username}, `}
+              <button onClick={() => signOut()}>logout</button>
+            </>
+          ) : null}
 
           <Switch>
-            <Route path="/profile">
+            <ProtectedRoute path="/profile">
               <Profile />
+            </ProtectedRoute>
+            <Route path="/login">
+              <Login />
             </Route>
             <Route path="/">
               <Home />

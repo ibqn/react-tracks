@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app'
+import { AuthProvider } from './components/auth'
 import reportWebVitals from './reportWebVitals'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
@@ -36,7 +37,9 @@ ReactDOM.render(
   <React.StrictMode>
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
