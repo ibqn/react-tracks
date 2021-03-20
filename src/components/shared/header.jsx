@@ -5,7 +5,7 @@ import { useTheme, makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Grid from '@material-ui/core/Grid'
-import Person from '@material-ui/icons/Person'
+// import Person from '@material-ui/icons/Person'
 import Typography from '@material-ui/core/Typography'
 
 import { ReactComponent as Logo } from './logo.svg'
@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
   username: {
     color: 'white',
     fontSize: 18,
+    marginRight: theme.spacing(2),
   },
 }))
 
@@ -73,7 +74,7 @@ const Header = () => {
 
           {user && (
             <Link to={`/profile/${user.username}`} className={classes.link}>
-              <Person className={classes.faceIcon} />
+              {/* <Person className={classes.faceIcon} /> */}
               <Typography variant="caption" className={classes.username} noWrap>
                 Hi, {user.username}
               </Typography>
