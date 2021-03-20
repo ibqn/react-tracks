@@ -78,6 +78,7 @@ const Login = () => {
     setInput({ ...input, [name]: value })
 
   const loading = false
+  // const error = { message: 'Error' }
   const error = null
 
   return (
