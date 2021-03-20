@@ -4,9 +4,11 @@ import { useAuth, Logout } from '../auth'
 import { useTheme, makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import RadioIcon from '@material-ui/icons/RadioTwoTone'
+import Grid from '@material-ui/core/Grid'
 import Person from '@material-ui/icons/Person'
 import Typography from '@material-ui/core/Typography'
+
+import { ReactComponent as Logo } from './logo.svg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,25 +22,28 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     textDecoration: 'none',
   },
+  logo: {
+    marginRight: theme.spacing(2),
+    width: 30,
+    height: 30,
+    fill: '#fff',
+  },
+  logoLink: {
+    color: 'white',
+    fontSize: 18,
+  },
   link: {
     display: 'flex',
     alignItems: 'center',
     textDecoration: 'none',
   },
-
-  logo: {
-    marginRight: theme.spacing(),
-    fontSize: 45,
-  },
   faceIcon: {
     marginRight: theme.spacing(),
-    fontSize: 30,
     color: 'white',
   },
   username: {
     color: 'white',
-    fontSize: 20,
-    // marginRight: theme.spacing(2),
+    fontSize: 18,
   },
 }))
 
@@ -57,17 +62,19 @@ const Header = () => {
     <>
       <AppBar position="static" className={classes.root}>
         <Toolbar>
-          <Link to="/" className={classes.grow}>
-            <RadioIcon className={classes.logo} color="secondary" />
-            <Typography variant="h5" color="secondary" noWrap>
-              ReactTracks
-            </Typography>
-          </Link>
+          <Grid className={classes.grow}>
+            <Link to="/" className={classes.grow}>
+              <Logo className={classes.logo} alt="" />
+              <Typography variant="caption" className={classes.logoLink} noWrap>
+                Tracks
+              </Typography>
+            </Link>
+          </Grid>
 
           {user && (
             <Link to={`/profile/${user.username}`} className={classes.link}>
               <Person className={classes.faceIcon} />
-              <Typography variant="h5" className={classes.username} noWrap>
+              <Typography variant="caption" className={classes.username} noWrap>
                 Hi, {user.username}
               </Typography>
             </Link>
