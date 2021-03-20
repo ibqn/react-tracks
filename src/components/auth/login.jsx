@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useAuth } from '../auth'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 
+import { Error } from '../shared'
+
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
@@ -76,6 +78,7 @@ const Login = () => {
     setInput({ ...input, [name]: value })
 
   const loading = false
+  const error = null
 
   return (
     <div className={classes.root}>
@@ -85,7 +88,7 @@ const Login = () => {
             <Lock />
           </Avatar>
         </Link>
-        <Typography variant="h4">Login as Existing User</Typography>
+        <Typography variant="h6">Login as Existing User</Typography>
 
         <form onSubmit={handleSubmit} className={classes.form}>
           <FormControl margin="normal" required fullWidth>
@@ -124,7 +127,7 @@ const Login = () => {
           </Button>
 
           {/* Error Handling */}
-          {/* {error && <Error error={error} />} */}
+          {error && <Error error={error} />}
         </form>
       </Paper>
     </div>

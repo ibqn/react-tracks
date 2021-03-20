@@ -8,7 +8,7 @@ import {
 } from '@apollo/client'
 
 import { Home, Profile } from './pages'
-import { Login, ProtectedRoute } from './components/auth'
+import { Login, Register, ProtectedRoute } from './components/auth'
 import { Header } from './components/shared'
 
 const client = new ApolloClient({
@@ -59,6 +59,9 @@ function App() {
             </ProtectedRoute>
             <Route path="/login">
               <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
             </Route>
             <Route path="/">
               <Home />
