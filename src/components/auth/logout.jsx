@@ -3,7 +3,7 @@ import ExitToApp from '@material-ui/icons/ExitToApp'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 
-import { useAuth } from './use-auth'
+import { useAuth } from '../auth'
 import { useHistory } from 'react-router'
 
 const useStyles = makeStyles((theme) => ({
