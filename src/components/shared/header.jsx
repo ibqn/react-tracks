@@ -1,8 +1,15 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth'
 
 const Header = () => {
-  const { user, signIn, signOut } = useAuth()
+  const location = useLocation()
+
+  const { user, signOut } = useAuth()
+
+  if (location.pathname.match('/login')) {
+    return null
+  }
+
   return (
     <>
       <div>header</div>
