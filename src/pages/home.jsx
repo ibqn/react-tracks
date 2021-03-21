@@ -3,6 +3,7 @@ import { useQuery, gql } from '@apollo/client'
 import { useTheme, makeStyles } from '@material-ui/core/styles'
 
 import { SearchTrack, CreateTrack, TrackList } from '../components/track'
+import { Error, Loading } from '../components/shared'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -37,12 +38,12 @@ const Home = () => {
 
   const { loading, error, data } = useQuery(TRACK_LIST)
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error :(</p>
-
-  const { tracks } = data
+  if (loading) return <Loading />
+  if (error) return <Error error={error} />
 
   // console.log(data)
+  const { tracks } = search || data
+
   return (
     <div className={classes.container}>
       <SearchTrack setSearch={setSearch} />
