@@ -1,4 +1,5 @@
 import { useTheme, makeStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 
@@ -15,15 +16,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const LikeTrack = ({ trackId }) => {
+const LikeTrack = ({ trackId, likeCount }) => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
   const likeTrack = () => {}
 
   const alreadyLiked = () => false
-
-  const likeCount = 3
 
   return (
     <IconButton
@@ -35,6 +34,11 @@ const LikeTrack = ({ trackId }) => {
       <ThumbUpIcon className={classes.icon} />
     </IconButton>
   )
+}
+
+LikeTrack.propTypes = {
+  trackId: PropTypes.number.isRequired,
+  likeCount: PropTypes.number.isRequired,
 }
 
 export default LikeTrack
