@@ -4,9 +4,9 @@ import App from './app'
 import { AuthProvider } from './components/auth'
 import reportWebVitals from './reportWebVitals'
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import indigo from '@material-ui/core/colors/indigo'
-import orange from '@material-ui/core/colors/orange'
+import { ApolloProvider } from '@apollo/client'
+
+import { MuiThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 // import material-ui fonts weights: 300,400,500,700
@@ -15,32 +15,20 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: indigo[500],
-      main: indigo[700],
-      dark: indigo[900],
-    },
-    secondary: {
-      light: orange[300],
-      main: orange[500],
-      dark: orange[700],
-    },
-  },
-  typography: {
-    useNextVariants: true,
-  },
-})
+import { theme } from './theme'
+
+import { client } from './apollo-client'
 
 ReactDOM.render(
   <React.StrictMode>
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </MuiThemeProvider>
+    <ApolloProvider client={client}>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </MuiThemeProvider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )
