@@ -44,7 +44,11 @@ const TrackList = ({ tracks }) => {
       {tracks.map((track) => (
         <Accordion key={track.id}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <ListItem className={classes.root}>
+            <ListItem
+              className={classes.root}
+              onClick={(event) => event.stopPropagation()}
+              onFocus={(event) => event.stopPropagation()}
+            >
               <LikeTrack trackId={track.id} likeCount={track.likes.length} />
               <ListItemText
                 primaryTypographyProps={{
