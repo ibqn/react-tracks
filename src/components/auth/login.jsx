@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../auth'
 import { Link, useHistory, useLocation } from 'react-router-dom'
+import { useMutation, useQuery, gql } from '@apollo/client'
 
 import { Error } from '../shared'
 
@@ -51,9 +52,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const LOGIN_MUTATION = gql`
+  mutation Login($username: String!, $password: String!) {
+    tokenAuth(username: $username, password: $password) {
+      token
+    }
+  }
+`
+
 const Login = () => {
   const theme = useTheme()
   const classes = useStyles(theme)
+
+  const [authToken, { loading, error }] = useMutation(LOGIN_MUTATION)
 
   const [input, setInput] = useState({})
 
@@ -63,23 +74,27 @@ const Login = () => {
 
   const { from } = { from: { pathname: '/' }, ...state }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
-    signIn({
-      callback: () => {
-        console.log('redirecting', from)
-        history.replace(from)
-      },
-    })
+    const { username, password } = input
+
+    try {
+      await authToken({ variables: { username, password } })
+
+      signIn({
+        callback: () => {
+          console.log('redirecting', from)
+          history.replace(from)
+        },
+      })
+    } catch (error) {
+      // console.error(error)
+    }
   }
 
   const handleChange = (name) => ({ target: { value } }) =>
     setInput({ ...input, [name]: value })
-
-  const loading = false
-  // const error = { message: 'Error' }
-  const error = null
 
   return (
     <div className={classes.root}>
