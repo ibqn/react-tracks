@@ -37,7 +37,7 @@ const LikeTrack = ({ trackId, likeCount }) => {
 }
 
 LikeTrack.propTypes = {
-  trackId: PropTypes.number.isRequired,
+  trackId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   likeCount: PropTypes.number.isRequired,
 }
 
