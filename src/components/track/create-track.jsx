@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CREATE_TRACK_MUTATION = gql`
-  mutation($title: String!, $description: String!, $url: String!) {
+  mutation($title: String!, $url: String!, $description: String) {
     createTrack(title: $title, description: $description, url: $url) {
       track {
         id
