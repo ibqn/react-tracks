@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, createContext } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { isLoggedInVar } from '../../apollo-client'
 import useLocalStorage from '../../hooks/use-local-storage'
+import { client } from '../../apollo-client'
 
 const USER_QUERY = gql`
   query {
@@ -52,6 +53,7 @@ const useProvideAuth = () => {
     setUser(false)
     isLoggedInVar(false)
     clearTokenValue()
+    client.resetStore()
     callback?.()
   }
 
