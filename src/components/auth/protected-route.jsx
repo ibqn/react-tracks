@@ -1,5 +1,4 @@
 import { Route, Redirect } from 'react-router-dom'
-
 import { useQuery, gql } from '@apollo/client'
 
 const IS_LOGGED_IN = gql`
@@ -9,12 +8,15 @@ const IS_LOGGED_IN = gql`
 `
 
 const ProtectedRoute = ({ children, ...rest }) => {
-  const { data } = useQuery(IS_LOGGED_IN)
+  const {
+    data: { isLoggedIn },
+  } = useQuery(IS_LOGGED_IN)
+
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        data.isLoggedIn ? (
+        isLoggedIn ? (
           children
         ) : (
           <Redirect
