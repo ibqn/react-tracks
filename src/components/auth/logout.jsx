@@ -27,13 +27,6 @@ const Logout = () => {
   const history = useHistory()
 
   const { user, signOut } = useAuth()
-  const handleSignIn = () => {
-    if (user) {
-      signOut()
-    } else {
-      history.replace({ pathname: '/login' })
-    }
-  }
 
   const [anchorEl, setAnchorEl] = useState(null)
 
@@ -43,6 +36,15 @@ const Logout = () => {
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleSignIn = () => {
+    if (user) {
+      signOut()
+      handleClose()
+    } else {
+      history.replace({ pathname: '/login' })
+    }
   }
 
   if (user) {
@@ -66,7 +68,7 @@ const Logout = () => {
         >
           <MenuItem onClick={handleClose}>Profile</MenuItem>
           <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <MenuItem onClick={handleSignIn}>Logout</MenuItem>
         </Menu>
       </>
     )

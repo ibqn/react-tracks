@@ -64,7 +64,7 @@ const Login = () => {
   const theme = useTheme()
   const classes = useStyles(theme)
 
-  const [authToken, { loading, error }] = useMutation(LOGIN_MUTATION)
+  const [authToken, { loading }] = useMutation(LOGIN_MUTATION)
 
   const [input, setInput] = useState({})
 
@@ -72,7 +72,13 @@ const Login = () => {
   const { state } = useLocation()
   const history = useHistory()
 
+  const [error, setError] = useState(null)
+
   const { from } = { from: { pathname: '/' }, ...state }
+  const callback = () => {
+    console.log('redirecting', from)
+    history.replace(from)
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -80,16 +86,17 @@ const Login = () => {
     const { username, password } = input
 
     try {
-      await authToken({ variables: { username, password } })
+      const { data } = await authToken({ variables: { username, password } })
 
-      signIn({
-        callback: () => {
-          console.log('redirecting', from)
-          history.replace(from)
-        },
-      })
-    } catch (error) {
-      // console.error(error)
+      const {
+        tokenAuth: { token },
+      } = data
+
+      console.log('token', token)
+      await signIn({ token, callback })
+    } catch (authError) {
+      setError({ message: 'Invalid credentials' })
+      console.error(authError)
     }
   }
 

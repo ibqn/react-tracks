@@ -1,3 +1,3 @@
-import localStorage from './local-storage'
+import useLocalStorage from './use-local-storage'
 
-export { localStorage }
+export { useLocalStorage }

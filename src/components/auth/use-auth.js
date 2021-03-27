@@ -1,17 +1,41 @@
 import { useState, useEffect, useContext, createContext } from 'react'
+import { gql, useQuery } from '@apollo/client'
+import { isLoggedInVar } from '../../apollo-client'
+import useLocalStorage from '../../hooks/use-local-storage'
+
+const USER_QUERY = gql`
+  query {
+    me {
+      id
+      username
+    }
+  }
+`
 
 const authContext = createContext(null)
 
 const useProvideAuth = () => {
+  const { loading, error, data, refetch } = useQuery(USER_QUERY, {
+    fetchPolicy: 'network-only',
+  })
+
+  const [, setTokenValue, clearTokenValue] = useLocalStorage('token')
+
   const [user, setUser] = useState(null)
 
-  const signIn = ({ email, password, callback } = {}) => {
+  const signIn = async ({ token, callback } = {}) => {
     console.log('sign in')
-    // FIXME
-    const user = { username: 'ibqn', email }
-    setUser(user)
+
+    if (token) {
+      setTokenValue(token)
+      const { data } = await refetch()
+      const { me } = data
+
+      setUser(me)
+      isLoggedInVar(true)
+    }
+
     callback?.() // use optional chaining
-    return user
   }
 
   const signUp = ({ username, email, password, callback } = {}) => {
@@ -26,6 +50,8 @@ const useProvideAuth = () => {
   const signOut = (callback) => {
     console.log('sign out')
     setUser(false)
+    isLoggedInVar(false)
+    clearTokenValue()
     callback?.()
   }
 
@@ -35,12 +61,22 @@ const useProvideAuth = () => {
 
   useEffect(() => {
     // use effect
+    if (loading || error) {
+      setUser(false)
+    }
+
+    if (data) {
+      const { me } = data
+
+      setUser(me)
+      console.log('user', me?.username)
+    }
     console.log('auth effect')
     return () => {
       // cleanup
       console.log('auth clean up')
     }
-  }, [])
+  }, [loading, error, data])
 
   return {
     user,

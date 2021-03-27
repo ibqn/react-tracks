@@ -1,5 +1,8 @@
+// import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useAuth, Logout } from '../auth'
+import { Logout, useAuth } from '../auth'
+// import { useAuth } from '../../hooks'
+// import { gql, useQuery } from '@apollo/client'
 
 import { useTheme, makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
@@ -53,7 +56,7 @@ const Header = () => {
   const classes = useStyles(theme)
   const location = useLocation()
 
-  const { user, signOut } = useAuth()
+  const { user } = useAuth()
 
   if (location.pathname.match('/login')) {
     return null

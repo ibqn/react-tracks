@@ -1,8 +1,65 @@
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
+import {
+  ApolloClient,
+  makeVar,
+  InMemoryCache,
+  gql,
+  createHttpLink,
+} from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+
+const getToken = () => {
+  try {
+    const tokenJson = window.localStorage.getItem('token')
+    return JSON.parse(tokenJson)
+  } catch (error) {
+    console.error(error)
+  }
+  return null
+}
+
+const isLoggedInVar = makeVar(!!getToken())
+
+const httpLink = createHttpLink({
+  uri: '/graphql',
+})
+
+const authLink = setContext((_, { headers }) => {
+  const token = getToken()
+
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `JWT ${token}` : '',
+    },
+  }
+})
+
+const link = authLink.concat(httpLink)
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        isLoggedIn: {
+          read() {
+            return isLoggedInVar()
+          },
+        },
+      },
+    },
+  },
+})
+
+const typeDefs = gql`
+  extend type Query {
+    isLoggedIn: Boolean!
+  }
+`
 
 const client = new ApolloClient({
-  uri: '/graphql',
-  cache: new InMemoryCache(),
+  link,
+  cache,
+  typeDefs,
 })
 
 // Test query
@@ -36,4 +93,4 @@ const testApollo = async () => {
 
 testApollo()
 
-export { client }
+export { client, isLoggedInVar }
