@@ -25,9 +25,9 @@ const SearchTrack = () => {
     event.preventDefault()
   }
 
-  const clearSearchInput = () => {}
+  const clearSearchInput = () => setSearch('')
 
-  const handleSearchInput = () => {}
+  const handleSearchInput = ({ target: { value } }) => setSearch(value)
 
   return (
     <form onSubmit={handleSubmit}>
@@ -41,6 +41,7 @@ const SearchTrack = () => {
           InputProps={{
             disableUnderline: true,
           }}
+          value={search}
           onChange={handleSearchInput}
         />
         <IconButton type="submit">
