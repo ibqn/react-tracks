@@ -83,16 +83,13 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    const { username, password } = input
-
     try {
-      const { data } = await authToken({ variables: { username, password } })
+      const { data } = await authToken({ variables: { ...input } })
 
       const {
         tokenAuth: { token },
       } = data
 
-      console.log('token', token)
       await signIn({ token, callback })
     } catch (authError) {
       setError({ message: 'Invalid credentials' })
