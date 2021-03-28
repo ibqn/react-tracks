@@ -14,11 +14,9 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
 import FormControl from '@material-ui/core/FormControl'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import LibraryMusicIcon from '@material-ui/icons/LibraryMusic'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -55,61 +53,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const QUERY_FIELDS = /*gql` */ `
+const UPDATE_TRACKS = gql`
+  fragment NewTrack on TrackType {
     id
-  title
-  description
-  url
-  likes {
-    id
-  }
-  postedBy {
-    id
-    username
-  }
-`
-
-const CREATE_TRACK_MUTATION = gql`
-  mutation($title: String!, $url: String!, $description: String) {
-    createTrack(title: $title, description: $description, url: $url) {
-      track {
-        ${QUERY_FIELDS}
-      }
+    title
+    description
+    url
+    likes {
+      id
+    }
+    postedBy {
+      id
+      username
     }
   }
 `
 
-const UPDATE_TRACKS = gql`
-  fragment NewTrack on TrackType {
-    ${QUERY_FIELDS}
+const CREATE_TRACK_MUTATION = gql`
+  ${UPDATE_TRACKS}
+
+  mutation($title: String!, $url: String!, $description: String) {
+    createTrack(title: $title, description: $description, url: $url) {
+      track {
+        ...NewTrack
+      }
+    }
   }
 `
-
 const CreateTrack = () => {
   const classes = useStyles()
 
   const [open, setOpen] = useState(false)
 
-  const [createTrack, { loading, error }] = useMutation(CREATE_TRACK_MUTATION)
+  const [createTrack, { loading }] = useMutation(CREATE_TRACK_MUTATION)
 
   const [input, setInput] = useState({})
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log('add track', input)
 
     try {
-      const { data } = await createTrack({
+      await createTrack({
         variables: { description: '', ...input },
         update: (cache, { data: { createTrack } }) => {
-          console.log('update called')
           cache.modify({
             fields: {
-              tracks(existingTracks = []) {
-                console.log('existing tracks ', existingTracks)
+              tracks: (existingTracks = []) => {
                 const { track } = createTrack
-                console.log('create track', createTrack)
-                console.log('create track', track)
                 const newTrackRef = cache.writeFragment({
                   data: track,
                   fragment: UPDATE_TRACKS,
@@ -120,7 +110,6 @@ const CreateTrack = () => {
           })
         },
       })
-      console.log('data', data)
       setOpen(false)
       setInput({})
     } catch (error) {
