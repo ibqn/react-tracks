@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { makeStyles /*useTheme*/ } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import { gql, useMutation } from '@apollo/client'
 
 import Fab from '@material-ui/core/Fab'
@@ -55,29 +55,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const QUERY_FIELDS = /*gql` */ `
+    id
+  title
+  description
+  url
+  likes {
+    id
+  }
+  postedBy {
+    id
+    username
+  }
+`
+
 const CREATE_TRACK_MUTATION = gql`
   mutation($title: String!, $url: String!, $description: String) {
     createTrack(title: $title, description: $description, url: $url) {
       track {
-        id
-        title
-        description
-        url
-        likes {
-          id
-        }
-        postedBy {
-          id
-          username
-        }
+        ${QUERY_FIELDS}
       }
     }
   }
 `
 
+const UPDATE_TRACKS = gql`
+  fragment NewTrack on TrackType {
+    ${QUERY_FIELDS}
+  }
+`
+
 const CreateTrack = () => {
-  // const theme = useTheme()
-  const classes = useStyles(/*theme*/)
+  const classes = useStyles()
 
   const [open, setOpen] = useState(false)
 
@@ -85,9 +94,38 @@ const CreateTrack = () => {
 
   const [input, setInput] = useState({})
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     console.log('add track', input)
+
+    try {
+      const { data } = await createTrack({
+        variables: { description: '', ...input },
+        update: (cache, { data: { createTrack } }) => {
+          console.log('update called')
+          cache.modify({
+            fields: {
+              tracks(existingTracks = []) {
+                console.log('existing tracks ', existingTracks)
+                const { track } = createTrack
+                console.log('create track', createTrack)
+                console.log('create track', track)
+                const newTrackRef = cache.writeFragment({
+                  data: track,
+                  fragment: UPDATE_TRACKS,
+                })
+                return [...existingTracks, newTrackRef]
+              },
+            },
+          })
+        },
+      })
+      console.log('data', data)
+      setOpen(false)
+      setInput({})
+    } catch (error) {
+      console.log('error', error)
+    }
   }
 
   const handleChange = (name) => ({ target: { value } }) =>
