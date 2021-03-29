@@ -1,23 +1,21 @@
-import { useTheme, makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // width: '100vw',
-    // height: '100vh',
+    height: '400px',
     display: 'flex',
     justifyContent: 'center',
-    alignContent: 'center',
+    alignItems: 'center',
   },
   progress: {
-    // margin: theme.spacing(2),
+    margin: theme.spacing(2),
     color: theme.palette.secondary.dark,
   },
 }))
 
 const Loading = () => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
+  const classes = useStyles()
 
   return (
     <div className={classes.root}>
