@@ -38,9 +38,9 @@ const Logout = () => {
     setAnchorEl(null)
   }
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (user) {
-      signOut()
+      await signOut()
       handleClose()
     } else {
       history.replace({ pathname: '/login' })

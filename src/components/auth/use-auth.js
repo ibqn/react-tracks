@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext, createContext } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useApolloClient } from '@apollo/client'
 import { isLoggedInVar } from '../../apollo-client'
 import useLocalStorage from '../../hooks/use-local-storage'
 
 const USER_QUERY = gql`
-  query {
+  query Me {
     me {
       id
       username
@@ -18,6 +18,8 @@ const useProvideAuth = () => {
   const { loading, error, data, refetch } = useQuery(USER_QUERY, {
     fetchPolicy: 'network-only',
   })
+
+  const client = useApolloClient()
 
   const [, setTokenValue, clearTokenValue] = useLocalStorage('token')
 
@@ -47,11 +49,13 @@ const useProvideAuth = () => {
     return user
   }
 
-  const signOut = (callback) => {
+  const signOut = async (callback) => {
     console.log('sign out')
     setUser(false)
     isLoggedInVar(false)
     clearTokenValue()
+
+    await client.clearStore()
     callback?.()
   }
 
