@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { gql } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 
-import { format } from 'date-fns'
+import moment from 'moment'
 
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
@@ -13,7 +13,7 @@ import ThumbUpIcon from '@material-ui/icons/ThumbUpTwoTone'
 import AudiotrackIcon from '@material-ui/icons/AudiotrackTwoTone'
 import Divider from '@material-ui/core/Divider'
 
-import { AudioPlayer } from '../components/shared'
+import { AudioPlayer, Error, Loading } from '../components/shared'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -90,25 +90,36 @@ const PROFILE_QUERY = gql`
 const Profile = () => {
   const classes = useStyles()
 
+  const { data, loading, error } = useQuery(PROFILE_QUERY, {
+    variables: { id: 1 },
+  })
+
+  if (loading) return <Loading />
+  if (error) return <Error error={error} />
+
+  const {
+    user: { username, dateJoined },
+  } = data || {}
+
+  // console.log('date', date)
+
   const likeSet = null
   const trackSet = null
-  const username = 'ibqn'
-  const dateJoined = new Date(2014, 1, 11)
+  // const username = 'ibqn'
+  // const dateJoined = new Date(2014, 1, 11)
 
   return (
-    <div>
-      {/* User Info Card */}
+    <>
       <Card className={classes.card}>
         <CardHeader
           avatar={<Avatar>{username[0]}</Avatar>}
           title={username}
-          subheader={`Joined ${format(dateJoined, 'MMM Do, yyyy')}`}
+          subheader={`Joined ${moment(dateJoined).format('MMM Do, yyyy')}`}
         />
       </Card>
 
-      {/* Created Tracks */}
       <Paper elevation={1} className={classes.paper}>
-        <Typography variant="title" className={classes.title}>
+        <Typography variant="h6" className={classes.title}>
           <AudiotrackIcon className={classes.audioIcon} />
           Created Tracks
         </Typography>
@@ -123,9 +134,8 @@ const Profile = () => {
         ))}
       </Paper>
 
-      {/* Liked Tracks */}
       <Paper elevation={1} className={classes.paper}>
-        <Typography variant="title" className={classes.title}>
+        <Typography variant="h6" className={classes.title}>
           <ThumbUpIcon className={classes.thumbIcon} />
           Liked Tracks
         </Typography>
@@ -140,7 +150,7 @@ const Profile = () => {
           </div>
         ))}
       </Paper>
-    </div>
+    </>
   )
 }
 
