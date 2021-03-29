@@ -6,7 +6,7 @@ import TrashIcon from '@material-ui/icons/DeleteForeverOutlined'
 import { useAuth } from '../auth'
 
 const DELETE_TRACK_MUTATION = gql`
-  mutation($trackId: ID!) {
+  mutation DeleteTrack($trackId: ID!) {
     deleteTrack(trackId: $trackId) {
       trackId
     }

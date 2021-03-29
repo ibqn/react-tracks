@@ -72,7 +72,7 @@ const UPDATE_TRACKS = gql`
 const CREATE_TRACK_MUTATION = gql`
   ${UPDATE_TRACKS}
 
-  mutation($title: String!, $url: String!, $description: String) {
+  mutation CreateTrack($title: String!, $url: String!, $description: String) {
     createTrack(title: $title, description: $description, url: $url) {
       track {
         ...NewTrack
