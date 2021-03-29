@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 import moment from 'moment'
@@ -98,15 +97,8 @@ const Profile = () => {
   if (error) return <Error error={error} />
 
   const {
-    user: { username, dateJoined },
+    user: { username, dateJoined, likeSet, trackSet },
   } = data || {}
-
-  // console.log('date', date)
-
-  const likeSet = null
-  const trackSet = null
-  // const username = 'ibqn'
-  // const dateJoined = new Date(2014, 1, 11)
 
   return (
     <>
