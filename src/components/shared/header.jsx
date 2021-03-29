@@ -1,10 +1,7 @@
-// import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Logout, useAuth } from '../auth'
-// import { useAuth } from '../../hooks'
-// import { gql, useQuery } from '@apollo/client'
 
-import { useTheme, makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Grid from '@material-ui/core/Grid'
@@ -52,8 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Header = () => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
+  const classes = useStyles()
   const location = useLocation()
 
   const { user } = useAuth()
@@ -63,42 +59,29 @@ const Header = () => {
   }
 
   return (
-    <>
-      <AppBar position="static" className={classes.root}>
-        <Toolbar>
-          <Grid className={classes.grow}>
-            <Link to="/" className={classes.grow}>
-              <Logo className={classes.logo} alt="" />
-              <Typography variant="caption" className={classes.logoLink} noWrap>
-                Tracks
-              </Typography>
-            </Link>
-          </Grid>
+    <AppBar position="static" className={classes.root}>
+      <Toolbar>
+        <Grid className={classes.grow}>
+          <Link to="/" className={classes.grow}>
+            <Logo className={classes.logo} alt="" />
+            <Typography variant="caption" className={classes.logoLink} noWrap>
+              Tracks
+            </Typography>
+          </Link>
+        </Grid>
 
-          {user && (
-            <Link to={`/profile/${user.username}`} className={classes.link}>
-              {/* <Person className={classes.faceIcon} /> */}
-              <Typography variant="caption" className={classes.username} noWrap>
-                Hi, {user.username}
-              </Typography>
-            </Link>
-          )}
+        {user && (
+          <Link to={`/profile/${user.username}`} className={classes.link}>
+            {/* <Person className={classes.faceIcon} /> */}
+            <Typography variant="caption" className={classes.username} noWrap>
+              Hi, {user.username}
+            </Typography>
+          </Link>
+        )}
 
-          <Logout />
-        </Toolbar>
-      </AppBar>
-      <div>header</div>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/profile">Profile</Link>
-          </li>
-        </ul>
-      </nav>
-    </>
+        <Logout />
+      </Toolbar>
+    </AppBar>
   )
 }
 
