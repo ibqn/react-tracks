@@ -10,7 +10,7 @@ function App() {
       <div>
         <Header />
         <Switch>
-          <ProtectedRoute path="/profile">
+          <ProtectedRoute path="/profile/:username">
             <Profile />
           </ProtectedRoute>
           <Route path="/login">

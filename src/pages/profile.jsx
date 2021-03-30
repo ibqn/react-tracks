@@ -1,5 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
 
+import { useParams } from 'react-router-dom'
+
 import moment from 'moment'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -54,8 +56,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const PROFILE_QUERY = gql`
-  query Profile($id: ID!) {
-    user(id: $id) {
+  query Profile($username: String!) {
+    user(username: $username) {
       id
       username
       dateJoined
@@ -89,23 +91,25 @@ const PROFILE_QUERY = gql`
 const Profile = () => {
   const classes = useStyles()
 
+  const { username } = useParams()
+
   const { data, loading, error } = useQuery(PROFILE_QUERY, {
-    variables: { id: 1 },
+    variables: { username },
   })
 
   if (loading) return <Loading />
   if (error) return <Error error={error} />
 
   const {
-    user: { username, dateJoined, likeSet, trackSet },
+    user: { username: userName, dateJoined, likeSet, trackSet },
   } = data || {}
 
   return (
     <>
       <Card className={classes.card}>
         <CardHeader
-          avatar={<Avatar>{username[0]}</Avatar>}
-          title={username}
+          avatar={<Avatar>{userName[0]}</Avatar>}
+          title={userName}
           subheader={`Joined ${moment(dateJoined).format('MMM Do, yyyy')}`}
         />
       </Card>
