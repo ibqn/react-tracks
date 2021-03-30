@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
-import { useTheme, makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 import { SearchTrack, CreateTrack, TrackList } from '../components/track'
 import { Error, Loading } from '../components/shared'
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const TRACK_LIST = gql`
-  query trackList {
+  query TrackList {
     tracks {
       id
       title
@@ -32,16 +32,15 @@ const TRACK_LIST = gql`
 `
 
 const Home = () => {
+  const classes = useStyles()
+
   const [search, setSearch] = useState(null)
-  const theme = useTheme()
-  const classes = useStyles(theme)
 
   const { loading, error, data } = useQuery(TRACK_LIST)
 
   if (loading) return <Loading />
   if (error) return <Error error={error} />
 
-  // console.log(data)
   const { tracks } = search || data
 
   return (
