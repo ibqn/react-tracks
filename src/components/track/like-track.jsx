@@ -1,4 +1,4 @@
-import { useTheme, makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
@@ -17,8 +17,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const LikeTrack = ({ trackId, likeCount }) => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
+  const classes = useStyles()
 
   const likeTrack = () => {}
 
