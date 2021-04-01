@@ -26,6 +26,9 @@ const TRACK_LIST = gql`
       }
       likes {
         id
+        user {
+          id
+        }
       }
     }
   }

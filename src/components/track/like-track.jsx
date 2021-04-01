@@ -55,7 +55,8 @@ const LikeTrack = ({ trackId, likes }) => {
     }
   }
 
-  const alreadyLiked = () => likes.includes(user.id)
+  const alreadyLiked = () =>
+    likes.map(({ user: { id } }) => id).includes(user.id)
 
   return (
     <IconButton
