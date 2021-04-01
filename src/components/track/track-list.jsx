@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-import { useTheme, makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -36,12 +36,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const TrackList = ({ tracks }) => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
+  const classes = useStyles()
 
   return (
     <List>
-      {tracks.map((track) => (
+      {tracks?.map((track) => (
         <Accordion key={track.id}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <ListItem
@@ -49,7 +48,7 @@ const TrackList = ({ tracks }) => {
               onClick={(event) => event.stopPropagation()}
               onFocus={(event) => event.stopPropagation()}
             >
-              <LikeTrack trackId={track.id} likeCount={track.likes.length} />
+              <LikeTrack trackId={track.id} likes={track.likes} />
               <ListItemText
                 primaryTypographyProps={{
                   variant: 'subtitle1',

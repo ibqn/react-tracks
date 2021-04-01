@@ -1,7 +1,13 @@
-import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
+
+import { gql, useMutation } from '@apollo/client'
+
+import { makeStyles } from '@material-ui/core/styles'
+
 import IconButton from '@material-ui/core/IconButton'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
+
+import { useAuth } from '../auth'
 
 const useStyles = makeStyles((theme) => ({
   iconButton: {
@@ -16,16 +22,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const LikeTrack = ({ trackId, likeCount }) => {
+const LIKE_TRACK_MUTATION = gql`
+  mutation LikeTrack($trackId: ID!) {
+    createLike(trackId: $trackId) {
+      like {
+        user {
+          id
+          username
+        }
+        track {
+          id
+        }
+      }
+    }
+  }
+`
+
+const LikeTrack = ({ trackId, likes }) => {
   const classes = useStyles()
 
-  const likeTrack = () => {}
+  const [likeTrack] = useMutation(LIKE_TRACK_MUTATION)
 
-  const alreadyLiked = () => false
+  const { user } = useAuth()
+
+  const likeCount = likes.length
+
+  const handleLike = async () => {
+    try {
+      await likeTrack({ variables: { trackId } })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const alreadyLiked = () => likes.includes(user.id)
 
   return (
     <IconButton
-      onClick={likeTrack}
+      onClick={handleLike}
       className={classes.iconButton}
       disabled={alreadyLiked()}
     >
@@ -37,7 +71,7 @@ const LikeTrack = ({ trackId, likeCount }) => {
 
 LikeTrack.propTypes = {
   trackId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  likeCount: PropTypes.number.isRequired,
+  likes: PropTypes.array.isRequired,
 }
 
 export default LikeTrack
