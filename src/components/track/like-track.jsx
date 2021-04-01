@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 import { gql, useMutation } from '@apollo/client'
@@ -6,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import IconButton from '@material-ui/core/IconButton'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
+import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined'
 
 import { useAuth } from '../auth'
 
@@ -45,8 +47,6 @@ const LikeTrack = ({ trackId, likes }) => {
 
   const { user } = useAuth()
 
-  const likeCount = likes.length
-
   const handleLike = async () => {
     try {
       await likeTrack({ variables: { trackId } })
@@ -55,17 +55,21 @@ const LikeTrack = ({ trackId, likes }) => {
     }
   }
 
-  const alreadyLiked = () =>
-    likes.map(({ user: { id } }) => id).includes(user.id)
+  const alreadyLiked = useMemo(
+    () => likes.map(({ user: { id } }) => id).includes(user.id),
+    [likes]
+  )
+
+  const Icon = alreadyLiked ? ThumbUpIcon : ThumbUpOutlinedIcon
 
   return (
     <IconButton
       onClick={handleLike}
       className={classes.iconButton}
-      disabled={alreadyLiked()}
+      // disabled={alreadyLiked}
     >
-      {likeCount}
-      <ThumbUpIcon className={classes.icon} />
+      {likes.length}
+      <Icon className={classes.icon} />
     </IconButton>
   )
 }
