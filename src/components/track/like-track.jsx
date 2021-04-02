@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 import { gql, useMutation } from '@apollo/client'
+import { UPDATE_TRACKS } from '../../fragments'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -25,15 +25,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const LIKE_TRACK_MUTATION = gql`
+  ${UPDATE_TRACKS}
+
   mutation LikeTrack($trackId: ID!) {
     createLike(trackId: $trackId) {
       like {
-        user {
-          id
-          username
-        }
         track {
-          id
+          ...NewTrack
         }
       }
     }
@@ -49,18 +47,29 @@ const LikeTrack = ({ trackId, likes }) => {
 
   const handleLike = async () => {
     try {
-      await likeTrack({ variables: { trackId } })
+      await likeTrack({
+        variables: { trackId },
+        update: (cache, { data: { createLike } }) => {
+          const {
+            like: { track },
+          } = createLike
+
+          cache.writeFragment({
+            id: cache.identify(track),
+            data: track,
+            fragment: UPDATE_TRACKS,
+          })
+        },
+      })
     } catch (error) {
       console.error(error)
     }
   }
 
-  const alreadyLiked = useMemo(
-    () => likes.map(({ user: { id } }) => id).includes(user.id),
-    [likes]
-  )
+  const alreadyLiked = () =>
+    likes.map(({ user: { id } }) => id).includes(user.id)
 
-  const Icon = alreadyLiked ? ThumbUpIcon : ThumbUpOutlinedIcon
+  const Icon = alreadyLiked() ? ThumbUpIcon : ThumbUpOutlinedIcon
 
   return (
     <IconButton

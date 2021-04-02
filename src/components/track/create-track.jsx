@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { gql, useMutation } from '@apollo/client'
+import { UPDATE_TRACKS } from '../../fragments/'
 
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
@@ -52,22 +53,6 @@ const useStyles = makeStyles((theme) => ({
     zIndex: '200',
   },
 }))
-
-const UPDATE_TRACKS = gql`
-  fragment NewTrack on TrackType {
-    id
-    title
-    description
-    url
-    likes {
-      id
-    }
-    postedBy {
-      id
-      username
-    }
-  }
-`
 
 const CREATE_TRACK_MUTATION = gql`
   ${UPDATE_TRACKS}

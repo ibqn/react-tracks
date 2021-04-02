@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { SearchTrack, CreateTrack, TrackList } from '../components/track'
 import { Error, Loading } from '../components/shared'
+import { UPDATE_TRACKS } from '../fragments'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -14,22 +15,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const TRACK_LIST = gql`
+  ${UPDATE_TRACKS}
+
   query TrackList {
     tracks {
-      id
-      title
-      description
-      url
-      postedBy {
-        id
-        username
-      }
-      likes {
-        id
-        user {
-          id
-        }
-      }
+      ...NewTrack
     }
   }
 `
