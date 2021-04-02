@@ -6,8 +6,8 @@ import { UPDATE_TRACKS } from '../../fragments'
 import { makeStyles } from '@material-ui/core/styles'
 
 import IconButton from '@material-ui/core/IconButton'
-import ThumbUpIcon from '@material-ui/icons/ThumbUp'
-import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined'
+import FavoriteIcon from '@material-ui/icons/Favorite'
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 
 import { useAuth } from '../auth'
 
@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     marginLeft: theme.spacing(0.5),
-    marginBottom: theme.spacing(0.5),
   },
 }))
 
@@ -66,10 +65,9 @@ const LikeTrack = ({ trackId, likes }) => {
     }
   }
 
-  const alreadyLiked = () =>
-    likes.map(({ user: { id } }) => id).includes(user.id)
+  const alreadyLiked = likes.map(({ user: { id } }) => id).includes(user.id)
 
-  const Icon = alreadyLiked() ? ThumbUpIcon : ThumbUpOutlinedIcon
+  const Icon = alreadyLiked ? FavoriteIcon : FavoriteBorderIcon
 
   return (
     <IconButton
