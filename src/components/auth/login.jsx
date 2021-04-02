@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useAuth } from '../auth'
 import { Link, useHistory, useLocation } from 'react-router-dom'
-import { useMutation, useQuery, gql } from '@apollo/client'
+import { useMutation, gql } from '@apollo/client'
 
 import { Error } from '../shared'
 
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import FormControl from '@material-ui/core/FormControl'
@@ -61,8 +61,7 @@ const LOGIN_MUTATION = gql`
 `
 
 const Login = () => {
-  const theme = useTheme()
-  const classes = useStyles(theme)
+  const classes = useStyles()
 
   const [authToken, { loading }] = useMutation(LOGIN_MUTATION)
 
@@ -146,7 +145,6 @@ const Login = () => {
             New user? Register here
           </Button>
 
-          {/* Error Handling */}
           {error && <Error error={error} />}
         </form>
       </Paper>
