@@ -1,4 +1,5 @@
 import { gql, useMutation } from '@apollo/client'
+import PropTypes from 'prop-types'
 
 import IconButton from '@material-ui/core/IconButton'
 import TrashIcon from '@material-ui/icons/DeleteForeverOutlined'
@@ -48,10 +49,14 @@ const DeleteTrack = ({ track }) => {
   }
 
   return (
-    <IconButton onClick={handleDelete}>
+    <IconButton onClick={handleDelete} disabled={user.id !== track.postedBy.id}>
       <TrashIcon />
     </IconButton>
   )
+}
+
+DeleteTrack.propTypes = {
+  track: PropTypes.object.isRequired,
 }
 
 export default DeleteTrack
