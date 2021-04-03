@@ -56,7 +56,7 @@ const DeleteTrack = ({ track }) => {
 }
 
 DeleteTrack.propTypes = {
-  track: PropTypes.object.isRequired,
+  track: PropTypes.string.isRequired,
 }
 
 export default DeleteTrack
