@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 import { gql, useMutation } from '@apollo/client'
-import { UPDATE_TRACKS } from '../../fragments'
+import { UPDATE_TRACKS, TRACK_LIKES } from '../../fragments'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -37,10 +37,19 @@ const LIKE_TRACK_MUTATION = gql`
   }
 `
 
+const DISLIKE_TRACK_MUTATION = gql`
+  mutation DislikeTrack($trackId: ID!) {
+    deleteLike(trackId: $trackId) {
+      likeId
+    }
+  }
+`
+
 const LikeTrack = ({ trackId, likes }) => {
   const classes = useStyles()
 
   const [likeTrack] = useMutation(LIKE_TRACK_MUTATION)
+  const [dislikeTrack] = useMutation(DISLIKE_TRACK_MUTATION)
 
   const { user } = useAuth()
 
@@ -65,15 +74,61 @@ const LikeTrack = ({ trackId, likes }) => {
     }
   }
 
+  const handleDislike = async () => {
+    try {
+      await dislikeTrack({
+        variables: { trackId },
+        update: (cache, { data: { deleteLike } }) => {
+          const { likeId } = deleteLike
+
+          cache.modify({
+            id: `TrackType:${trackId}`,
+            fields: {
+              likes: (existingLikeRefs = [], { readField }) => {
+                return existingLikeRefs.filter(
+                  (likeRef) => likeId !== readField('id', likeRef)
+                )
+              },
+            },
+          })
+
+          cache.evict({ id: `LikeType:${likeId}` })
+
+          // let trackLikes = cache.readFragment({
+          //   id: `TrackType:${trackId}`,
+          //   fragment: TRACK_LIKES,
+          // })
+
+          // console.log('track likes', trackLikes)
+
+          // trackLikes = {
+          //   ...trackLikes,
+          //   likes: trackLikes.likes.filter((like) => like.id !== likeId),
+          // }
+
+          // console.log('filteredtrack likes', trackLikes)
+          console.log('likeid', likeId)
+
+          // cache.writeFragment({
+          //   id: `TrackType:${trackId}`,
+          //   fragment: TRACK_LIKES,
+          //   data: { likes: likes.filter((like) => like.id !== likeId) },
+          // })
+        },
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const alreadyLiked = likes.map(({ user: { id } }) => id).includes(user.id)
 
   const Icon = alreadyLiked ? FavoriteIcon : FavoriteBorderIcon
 
   return (
     <IconButton
-      onClick={handleLike}
+      onClick={alreadyLiked ? handleDislike : handleLike}
       className={classes.iconButton}
-      // disabled={alreadyLiked}
     >
       {likes.length}
       <Icon className={classes.icon} />
