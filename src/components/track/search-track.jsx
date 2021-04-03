@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 import debounce from 'lodash/debounce'
@@ -40,21 +40,23 @@ const SearchTrack = ({ setSearchResult }) => {
 
   const client = useApolloClient()
 
-  const handleSubmit = async () => {
-    try {
-      const { data } = await client.query({
-        query: SEARCH_TRACKS_QUERY,
-        variables: { search },
-      })
+  const delayedSearch = useMemo(
+    () =>
+      debounce(async () => {
+        try {
+          const { data } = await client.query({
+            query: SEARCH_TRACKS_QUERY,
+            variables: { search },
+          })
 
-      console.log('search data', data)
-      setSearchResult(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const delayedSearch = useCallback(debounce(handleSubmit, 300), [search])
+          console.log('search data', data)
+          setSearchResult(data)
+        } catch (error) {
+          console.error(error)
+        }
+      }, 300),
+    [search, setSearchResult, client]
+  )
 
   const clearSearchInput = () => {
     setSearch('')
