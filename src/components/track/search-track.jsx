@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
+
+import { useApolloClient, gql } from '@apollo/client'
 
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
@@ -6,6 +9,8 @@ import ClearIcon from '@material-ui/icons/Clear'
 import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
 import SearchIcon from '@material-ui/icons/Search'
+
+import { UPDATE_TRACKS } from '../../fragments'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,16 +21,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const SearchTrack = () => {
+const SEARCH_TRACKS_QUERY = gql`
+  ${UPDATE_TRACKS}
+
+  query($search: String) {
+    tracks(search: $search) {
+      ...NewTrack
+    }
+  }
+`
+
+const SearchTrack = ({ setSearchResult }) => {
   const classes = useStyles()
 
   const [search, setSearch] = useState('')
 
-  const handleSubmit = (event) => {
+  const client = useApolloClient()
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
+
+    try {
+      const { data } = await client.query({
+        query: SEARCH_TRACKS_QUERY,
+        variables: { search },
+      })
+
+      console.log('data', data)
+      setSearchResult(data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const clearSearchInput = () => setSearch('')
+  const clearSearchInput = () => {
+    setSearch('')
+    setSearchResult(null)
+  }
 
   const handleSearchInput = ({ target: { value } }) => setSearch(value)
 
@@ -50,6 +82,10 @@ const SearchTrack = () => {
       </Paper>
     </form>
   )
+}
+
+SearchTrack.propTypes = {
+  setSearchResult: PropTypes.func.isRequired,
 }
 
 export default SearchTrack

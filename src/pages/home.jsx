@@ -38,7 +38,7 @@ const Home = () => {
 
   return (
     <div className={classes.container}>
-      <SearchTrack setSearch={setSearch} />
+      <SearchTrack setSearchResult={setSearch} />
       <CreateTrack />
       {/* {JSON.stringify(tracks)} */}
       <TrackList tracks={tracks} />
