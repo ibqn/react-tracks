@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
+
+import debounce from 'lodash/debounce'
 
 import { useApolloClient, gql } from '@apollo/client'
 
@@ -38,21 +40,21 @@ const SearchTrack = ({ setSearchResult }) => {
 
   const client = useApolloClient()
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-
+  const handleSubmit = async () => {
     try {
       const { data } = await client.query({
         query: SEARCH_TRACKS_QUERY,
         variables: { search },
       })
 
-      console.log('data', data)
+      console.log('search data', data)
       setSearchResult(data)
     } catch (error) {
       console.error(error)
     }
   }
+
+  const delayedSearch = useCallback(debounce(handleSubmit, 300), [search])
 
   const clearSearchInput = () => {
     setSearch('')
@@ -61,26 +63,33 @@ const SearchTrack = ({ setSearchResult }) => {
 
   const handleSearchInput = ({ target: { value } }) => setSearch(value)
 
+  useEffect(() => {
+    console.log('effect', search)
+    if (search) {
+      delayedSearch()
+    }
+
+    return delayedSearch.cancel
+  }, [search, delayedSearch])
+
   return (
-    <form onSubmit={handleSubmit}>
-      <Paper className={classes.root} elevation={1}>
-        <IconButton onClick={clearSearchInput}>
-          <ClearIcon />
-        </IconButton>
-        <TextField
-          fullWidth
-          placeholder="Search All Tracks"
-          InputProps={{
-            disableUnderline: true,
-          }}
-          value={search}
-          onChange={handleSearchInput}
-        />
-        <IconButton type="submit">
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-    </form>
+    <Paper className={classes.root} elevation={1}>
+      <IconButton onClick={clearSearchInput}>
+        <ClearIcon />
+      </IconButton>
+      <TextField
+        fullWidth
+        placeholder="Search All Tracks"
+        InputProps={{
+          disableUnderline: true,
+        }}
+        value={search}
+        onChange={handleSearchInput}
+      />
+      <IconButton type="submit">
+        <SearchIcon />
+      </IconButton>
+    </Paper>
   )
 }
 
