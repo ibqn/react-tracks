@@ -1,7 +1,8 @@
+import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 import { gql, useMutation } from '@apollo/client'
-import { UPDATE_TRACKS, TRACK_LIKES } from '../../fragments'
+import { UPDATE_TRACKS } from '../../fragments'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -94,26 +95,7 @@ const LikeTrack = ({ trackId, likes }) => {
 
           cache.evict({ id: `LikeType:${likeId}` })
 
-          // let trackLikes = cache.readFragment({
-          //   id: `TrackType:${trackId}`,
-          //   fragment: TRACK_LIKES,
-          // })
-
-          // console.log('track likes', trackLikes)
-
-          // trackLikes = {
-          //   ...trackLikes,
-          //   likes: trackLikes.likes.filter((like) => like.id !== likeId),
-          // }
-
-          // console.log('filteredtrack likes', trackLikes)
           console.log('likeid', likeId)
-
-          // cache.writeFragment({
-          //   id: `TrackType:${trackId}`,
-          //   fragment: TRACK_LIKES,
-          //   data: { likes: likes.filter((like) => like.id !== likeId) },
-          // })
         },
       })
     } catch (error) {
@@ -121,7 +103,10 @@ const LikeTrack = ({ trackId, likes }) => {
     }
   }
 
-  const alreadyLiked = likes.map(({ user: { id } }) => id).includes(user.id)
+  const alreadyLiked = useMemo(
+    () => likes.map(({ user: { id } }) => id).includes(user.id),
+    [likes, user]
+  )
 
   const Icon = alreadyLiked ? FavoriteIcon : FavoriteBorderIcon
 
