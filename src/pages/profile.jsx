@@ -56,6 +56,15 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const PROFILE_QUERY = gql`
+  fragment TrackInfo on TrackType {
+    id
+    title
+    url
+    likes {
+      id
+    }
+  }
+
   query Profile($username: String!) {
     user(username: $username) {
       id
@@ -64,12 +73,7 @@ const PROFILE_QUERY = gql`
       likeSet {
         id
         track {
-          id
-          title
-          url
-          likes {
-            id
-          }
+          ...TrackInfo
           postedBy {
             id
             username
@@ -77,12 +81,7 @@ const PROFILE_QUERY = gql`
         }
       }
       trackSet {
-        id
-        title
-        url
-        likes {
-          id
-        }
+        ...TrackInfo
       }
     }
   }
