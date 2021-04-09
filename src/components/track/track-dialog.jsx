@@ -31,11 +31,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const TrackDialog = (props) => {
-  const { submitAction, loading, open, setOpen } = props
+  const { submitAction, loading, open, setOpen, content, track = {} } = props
 
-  const [input, setInput] = useState({})
+  const [input, setInput] = useState(track)
 
   const classes = useStyles()
+
+  const { title, contentText, actionText } = content
 
   const handleChange = (name) => ({ target: { value } }) =>
     setInput({ ...input, [name]: value })
@@ -55,15 +57,16 @@ const TrackDialog = (props) => {
   return (
     <Dialog open={open} className={classes.dialog}>
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Create Track</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>Add a Title, Description & URL</DialogContentText>
+          <DialogContentText>{contentText}</DialogContentText>
           <FormControl fullWidth>
             <TextField
               label="Title"
               placeholder="Add Title"
               onChange={handleChange('title')}
               className={classes.textField}
+              value={input?.title || ''}
             />
           </FormControl>
           <FormControl fullWidth>
@@ -74,6 +77,7 @@ const TrackDialog = (props) => {
               placeholder="Add Description"
               onChange={handleChange('description')}
               className={classes.textField}
+              value={input?.description || ''}
             />
           </FormControl>
           <FormControl fullWidth>
@@ -82,6 +86,7 @@ const TrackDialog = (props) => {
               placeholder="Add URL"
               onChange={handleChange('url')}
               className={classes.textField}
+              value={input?.url || ''}
             />
           </FormControl>
         </DialogContent>
@@ -101,7 +106,7 @@ const TrackDialog = (props) => {
             {loading ? (
               <CircularProgress className={classes.save} size={24} />
             ) : (
-              'Add Track'
+              actionText
             )}
           </Button>
         </DialogActions>
@@ -115,6 +120,12 @@ TrackDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
   submitAction: PropTypes.func.isRequired,
+  content: PropTypes.exact({
+    title: PropTypes.string.isRequired,
+    contentText: PropTypes.string.isRequired,
+    actionText: PropTypes.string.isRequired,
+  }).isRequired,
+  track: PropTypes.object,
 }
 
 export default TrackDialog

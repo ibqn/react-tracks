@@ -19,6 +19,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const DIALOG_CONTENT = {
+  title: 'Create Track',
+  contentText: 'Add a Title, Description & URL',
+  actionText: 'Add Track',
+}
+
 const CREATE_TRACK_MUTATION = gql`
   ${UPDATE_TRACKS}
 
@@ -71,6 +77,7 @@ const CreateTrack = () => {
         setOpen={setOpen}
         loading={loading}
         submitAction={submitAction}
+        content={DIALOG_CONTENT}
       />
     </>
   )
